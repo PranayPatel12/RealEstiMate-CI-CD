@@ -4,6 +4,9 @@ FROM python:3.10-slim
 # Set working directory in the container
 WORKDIR /app
 
+# Install pip (though the python:3.10-slim image should have pip, just in case it's missing)
+RUN apt-get update && apt-get install -y python3-pip
+
 # Copy all local files into the container
 COPY . /app
 
