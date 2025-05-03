@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'realestimate-image'
-        DOCKERHUB_IMAGE = 'pranay590/realestimate-image:v1'
+        DOCKERHUB_IMAGE = 'pranay590/realestimate-image:latest'
         CONTAINER_NAME = 'realestimate-container'
         HOST_PORT = '8000'
         CONTAINER_PORT = '8000'
