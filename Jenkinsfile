@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'realestimate-image'
-        DOCKERHUB_IMAGE = 'pranay590/realestimate-image:latest'
+        DOCKERHUB_USERNAME = 'pranay590'
+        DOCKERHUB_IMAGE = "${DOCKERHUB_USERNAME}/realestimate-image:latest"
         CONTAINER_NAME = 'realestimate-container'
         HOST_PORT = '8000'
         CONTAINER_PORT = '8000'
@@ -19,7 +20,6 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'No tests defined. Skipping...'
-                // Add your test commands like pytest here if needed
             }
         }
 
@@ -31,11 +31,11 @@ pipeline {
 
         stage('Tag and Push to DockerHub') {
             steps {
-                withCredentials([string(credentialsId: 'Docker-hub-credentials', variable: 'DOCKER_HUB_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'Docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh """
-                        echo "$DOCKER_HUB_PASS" | docker login -u pranay590 --password-stdin
-                        docker tag $IMAGE_NAME $DOCKERHUB_IMAGE
-                        docker push $DOCKERHUB_IMAGE
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                        docker tag $IMAGE_NAME $DOCKER_USERNAME/$IMAGE_NAME:latest
+                        docker push $DOCKER_USERNAME/$IMAGE_NAME:latest
                     """
                 }
             }
@@ -46,7 +46,7 @@ pipeline {
                 sh '''
                     docker stop $CONTAINER_NAME || true
                     docker rm $CONTAINER_NAME || true
-                    docker run -d --name $CONTAINER_NAME -p $HOST_PORT:$CONTAINER_PORT $IMAGE_NAME
+                    docker run -d --name $CONTAINER_NAME -p $HOST_PORT:$CONTAINER_PORT $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
                 '''
             }
         }
