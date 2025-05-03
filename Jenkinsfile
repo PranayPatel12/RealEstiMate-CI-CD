@@ -16,12 +16,6 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'pip install --no-cache-dir -r requirements.txt'
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 echo 'No tests defined. Skipping...'
